@@ -13,7 +13,7 @@ num_backtracks = 0
 def print_puzzle_grid():
     global puzzle_grid
 
-    for i in range(0, 8):
+    for i in range(0, 9):
         print(str(puzzle_grid[3 * i]) + ", " + str(puzzle_grid[3 * i + 1]) + ", " + str(puzzle_grid[3 * i + 2]) + "\n")
 
 def get_element(i, j):
