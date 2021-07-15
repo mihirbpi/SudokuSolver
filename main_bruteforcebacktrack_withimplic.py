@@ -11,6 +11,7 @@ puzzle_grid = [[0, 0, 7], [6, 2, 0], [0, 0, 0],
                [1, 0, 0], [0, 0, 0], [0, 4, 7]]
 
 num_backtracks = 0
+implications_list = []
 
 def print_puzzle_grid():
     global puzzle_grid
@@ -64,6 +65,34 @@ def first_empty_square():
 
     return -1, -1
 
+def make_implications():
+
+    global implications_list
+
+    for i in range(0, 9):
+
+        for j in range(0, 9):
+
+            if(is_empty(i, j)):
+                valid_values_set = {1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+                for num in range(1, 10):
+
+                    if(not is_valid_element(i, j, num)):
+                        valid_values_set.remove(num)
+
+                if(len(valid_values_set) == 1):
+                    implications_list.append([i, j, valid_values_set])
+                    set_element(i, j, valid_values_set.pop())
+
+def clear_implications():
+    global implications_list
+
+    for elem in implications_list:
+        clear_square(elem[0], elem[1])
+
+    implications_list = []
+
 def solve_sudoku():
     global num_backtracks
     i, j = first_empty_square()
@@ -76,9 +105,12 @@ def solve_sudoku():
         if(is_valid_element(i, j, guess)):
             set_element(i, j, guess)
 
+            make_implications()
+
             if(solve_sudoku()):
                 return True
             else:
+                clear_implications()
                 clear_square(i, j)
                 num_backtracks += 1
 
