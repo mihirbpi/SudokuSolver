@@ -15,6 +15,7 @@ int puzzle_grid[27][3] = {
 };
 
 long long int num_backtracks = 0;
+int implications_list[9][9][10] = {0};
 
 void print_puzzle_grid() {
   int i;
@@ -27,7 +28,6 @@ void print_puzzle_grid() {
       printf("[%d, %d, %d]", puzzle_grid[3*i + 2][0], puzzle_grid[3*i + 2][1], puzzle_grid[3*i + 2][2]);
       printf("\n");
   }
-
 }
 
 int get_element(int i, int j) {
@@ -68,17 +68,76 @@ int is_valid_element(int i, int j, int e) {
         }
     }
 
-    for (y = 3 * (i / 3);  y < (3 * (i / 3)) + 3; y++){
+    for (y = 3 * (i / 3);  y < (3 * (i / 3)) + 3; y++) {
 
-        for (x = 3 * (j / 3); x < (3 * (j / 3)) + 3; x++){
+        for (x = 3 * (j / 3); x < (3 * (j / 3)) + 3; x++) {
 
             if( x != i && x != j  && get_element(y, x) == e) {
                 return 0;
             }
-
         }
     }
     return 1;
+}
+
+void make_implications() {
+  int i, j, k, num, num_nonzeroes, guess;
+
+  for (i = 0; i < 9; i++) {
+
+    for (j = 0; j < 9; j++) {
+
+        if (is_empty(i, j)) {
+
+          for (num = 1; num < 10; num++){
+
+            if(is_valid_element(i, j, num) == 0){
+              implications_list[i][j][num] = 0;
+            }
+          }
+
+          num_nonzeroes = 9;
+
+          for (k = 1; k < 10; k++) {
+
+            if(implications_list[i][j][k] == 0){
+                num_nonzeroes --;
+            } else {
+              guess = implications_list[i][j][k];
+            }
+          }
+
+          if(num_nonzeroes == 1) {
+            implications_list[i][j][0] = 1;
+            set_element(i, j, guess);
+          }
+      }
+    }
+  }
+}
+
+void clear_implications() {
+  int i, j, k;
+
+  for (i = 0; i < 9; i++) {
+
+    for (j = 0; j < 9; j++) {
+
+      if(implications_list[i][j][0] == 1){
+        clear_square(i, j);
+      }
+    }
+  }
+
+  for (i = 0; i < 10; i++) {
+
+    for (j = 0; j < 10; j++) {
+
+      for (k = 0; k < 10; k++){
+        implications_list[i][j][k] = k;
+      }
+    }
+  }
 }
 
 int solve_sudoku() {
@@ -106,15 +165,16 @@ int solve_sudoku() {
 
     if(is_valid_element(i, j, guess)) {
       set_element(i, j, guess);
+      make_implications();
 
       if(solve_sudoku()){
         return 1;
       } else {
+        clear_implications();
         clear_square(i, j);
         num_backtracks ++;
       }
     }
-
   }
   return 0;
 }
@@ -136,6 +196,17 @@ char *check_puzzle(){
 }
 
 int main(){
+  int i, j, k;
+
+  for (i = 0; i < 10; i++) {
+
+    for (j = 0; j < 10; j++) {
+
+      for (k = 0; k <= 9; k++) {
+        implications_list[i][j][k] = k;
+      }
+    }
+  }
   printf("original puzzle: \n");
   print_puzzle_grid();
   solve_sudoku();
