@@ -53,20 +53,18 @@ def is_valid_element(i, j, e):
                 return False
     return True
 
-def first_empty_square():
-
-    for i in range(0, 9):
-
-        for j in range(0, 9):
-
-            if(is_empty(i, j)):
-                return i, j
-
-    return -1, -1
-
 def solve_sudoku():
     global num_backtracks
-    i, j = first_empty_square()
+    i = -1
+    j = -1
+
+    for y in range(0, 9):
+
+        for x in range(0, 9):
+
+            if(is_empty(y, x)):
+                i = y
+                j = x
 
     if(i == -1 and j == -1):
         return True

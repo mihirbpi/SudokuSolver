@@ -95,7 +95,17 @@ def clear_implications():
 
 def solve_sudoku():
     global num_backtracks
-    i, j = first_empty_square()
+
+    i = -1
+    j = -1
+
+    for y in range(0, 9):
+
+        for x in range(0, 9):
+
+            if(is_empty(y, x)):
+                i = y
+                j = x
 
     if(i == -1 and j == -1):
         return True
