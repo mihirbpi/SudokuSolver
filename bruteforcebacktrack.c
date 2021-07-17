@@ -1,10 +1,10 @@
 #include <stdio.h>
 #define N 27
-#define M M
+#define M 3
 
 long long int num_backtracks = 0;
 
-void print_puzzle_grid(int puzzle_grid[][]) {
+void print_puzzle_grid(int puzzle_grid[N][M]) {
   int i;
 
   for (i = 0; i < M*M; i++) {
